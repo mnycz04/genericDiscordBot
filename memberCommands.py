@@ -1,10 +1,13 @@
 """
 Commands that can be used by everybody. Mostly for fun, but there is some use
 """
+import logging
+import os
 
 import discord
 from discord.ext import commands
-from songHandler import Song
+
+from utilities import check_blacklist, check_valid_channel, get_mp3
 
 
 class MemberCommands(commands.Cog, name="Member Commands"):
@@ -19,27 +22,32 @@ class MemberCommands(commands.Cog, name="Member Commands"):
         Takes either a link, or just a search query
         """
         await ctx.message.delete()
+        logger = logging.getLogger(str(ctx.guild.id))
+
+        if await check_blacklist(ctx.guild, ctx.author):
+            await ctx.send(f"Sorry <@!{ctx.author.id}>, you're blacklisted from using this command!",
+                           delete_after=10)
+            logger.info(f"{ctx.author.name} was barred from using the MP3 command.")
+            return
+
+        if not await check_valid_channel(ctx.guild, "music_cmds_channel", ctx.message):
+            await ctx.send("You can't use this command in this channel!")
+            logger.info(f"{ctx.author.name} was barred from using the MP3 command because of incorrect channel")
+            return
+
+        logger.info(f"Mp3 Requested by user \"{ctx.author.name},\" id: {ctx.author.id}")
 
         query = ''.join(query)
-        song = Song()
+        logger.info(f"Query is: \"{query}\"")
         loading_embed = discord.Embed(title="Downloading Song...",
                                       color=int(hex(int("009dff", 16)), 0))
         loading_embed = await ctx.send(embed=loading_embed)
         try:
-            song.song_query = query
-            await song.download_song()
-            duration_formatted = f"{int(song.song_duration // 60)}:{int(song.song_duration % 60)}"
-            song_embed = discord.Embed(title=song.song_url,
-                                       color=int(hex(int("009dff", 16)), 0))
-            song_embed.set_image(url=song.song_thumbnail)
-            song_embed.set_footer(text=f"Duration: {duration_formatted}")
-            song_embed.set_author(name=song.song_name)
-            await loading_embed.delete()
-            await ctx.send(embed=song_embed, file=discord.File(f"{song.song_file_location}.{song.song_file_ext}",
-                                                               f"{song.song_name}.{song.song_file_ext}".replace('-',
-                                                                                                                '')
-                                                               .strip()
-                                                               .replace(' ', '-')))
+            song = await get_mp3(query)
+            await ctx.send(embed=song[0], file=discord.File(song[1]))
         except Exception:
-            await ctx.send("There was an error getting your file. It might not be compatible.", delete_after=5)
+            await ctx.send("Error retrieving youtube video. It might not be a valid file.", delete_after=10)
+        else:
+            os.remove(f"{song[1]}")
+        finally:
             await loading_embed.delete()

@@ -86,7 +86,7 @@ class Song:
         self.__song_duration = self.__song['duration']
         self.__song_thumbnail = self.__song['thumbnail']
 
-    async def download_song(self):
+    def download_song(self):
         with youtube_dl.YoutubeDL(YTDL_OPTIONS) as ytdl:
             ytdl.download([self.__song['webpage_url']])
         ff = ffmpy.FFmpeg(inputs={f"{self.__song_file_location}": None},

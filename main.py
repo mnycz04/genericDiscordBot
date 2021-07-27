@@ -11,6 +11,7 @@ from shutil import copyfile
 import discord
 from discord.ext import commands
 
+from adminCommands import AdminCommands
 from memberCommands import MemberCommands
 from utilities import default_log_format
 
@@ -66,4 +67,5 @@ async def on_ready():
 
 
 bot.add_cog(MemberCommands())
+bot.add_cog(AdminCommands())
 bot.run("NzU2MzI3MDQ0MjA3NjA3OTUw.X2QOcw.MuAf1OOSi9ykYddCjETPP8uX5GM")
