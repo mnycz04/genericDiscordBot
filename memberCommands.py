@@ -27,7 +27,7 @@ class MemberCommands(commands.Cog, name="Member Commands"):
         loading_embed = await ctx.send(embed=loading_embed)
         try:
             song.song_query = query
-            song.download_song()
+            await song.download_song()
             duration_formatted = f"{int(song.song_duration // 60)}:{int(song.song_duration % 60)}"
             song_embed = discord.Embed(title=song.song_url,
                                        color=int(hex(int("009dff", 16)), 0))
