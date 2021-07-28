@@ -3,7 +3,9 @@ import configparser
 import functools
 import logging
 import typing
+from random import randrange
 
+import praw
 from discord import Embed, guild, member, message, utils
 
 from songHandler import Song
@@ -11,12 +13,18 @@ from songHandler import Song
 
 def to_thread(func: typing.Callable):
     @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
+    async def wrapper(*args):
         loop = asyncio.get_event_loop()
-        wrapped = functools.partial(func, *args, **kwargs)
+        # wrapped = functools.partial(func, *args, **kwargs)
         return await loop.run_in_executor(None, func, args)
 
     return wrapper
+
+
+MAX_POSTS = 100
+reddit = praw.Reddit(client_id='X0VJq7wE00FEYQ',
+                     client_secret='oQ09GcBauKxPxN2su0o18Xb_EqC6vw',
+                     user_agent='windows:mnycz04.discord:v1.5.3 (by /u/mnycz04; mnycz04@gmail.com)')
 
 
 @to_thread
@@ -55,22 +63,39 @@ async def check_blacklist(server: guild, author: member):
 
 
 async def check_valid_channel(server: guild, channel_name, command: message):
-    channel = await GuildConfig.read_config(str(server.id), section="CHANNELS", key=channel_name)
-    if channel == "":
+    channels = set((await GuildConfig.read_config(str(server.id), section="CHANNELS", key=channel_name)).split(", "))
+    if channels == "":
         return True
 
-    if int(channel) == command.channel.id:
+    if str(command.channel.id) in channels:
         return True
     else:
         return False
 
 
-async def check_admin(server: guild, author: member):
+async def check_admin(author: member):
     return author.guild_permissions.administrator
 
 
-class GuildConfig:
+@to_thread
+def get_reddit_post(query):
+    subs = reddit.subreddits.search_by_name(query)
 
+    if not subs:
+        raise LookupError
+    hot_posts = subs[0].hot(limit=MAX_POSTS)
+    post_index = randrange(0, MAX_POSTS - 1)
+    for i, post in enumerate(hot_posts):
+        if i == post_index:
+            submission = post
+
+    if submission is None:
+        raise ConnectionRefusedError
+    else:
+        return submission
+
+
+class GuildConfig:
     @staticmethod
     async def read_config(guild_id: str, section: str, key: str) -> str:
         config = configparser.ConfigParser()
