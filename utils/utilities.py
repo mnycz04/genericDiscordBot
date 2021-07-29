@@ -7,16 +7,16 @@ import typing
 from random import randrange
 
 import praw
-from discord import Embed, guild, member, message, utils
+from discord import Embed, channel, guild, member, message, utils
 
 from utils.mp3Downloader import Song
 
 
 def to_thread(func: typing.Callable):
     @functools.wraps(func)
-    async def wrapper(*args):
+    async def wrapper(*args, **kwargs):
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, func, args)
+        return await loop.run_in_executor(None, func, *args, *kwargs)
 
     return wrapper
 
@@ -28,7 +28,7 @@ reddit = praw.Reddit(client_id='X0VJq7wE00FEYQ',
 
 
 @to_thread
-def get_mp3(query) -> (Embed, str):
+def get_mp3(*, query) -> (Embed, str):
     try:
         song = Song()
         song.song_query = query
@@ -43,6 +43,10 @@ def get_mp3(query) -> (Embed, str):
         raise
     else:
         return embed, f"{song.song_file_location}.mp3"
+
+
+async def purge_messages(ctx, messages: int):
+    await ctx.channel.purge(limit=messages, bulk=True)
 
 
 default_log_format = logging.Formatter(

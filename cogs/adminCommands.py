@@ -3,7 +3,7 @@ import logging
 from discord import utils
 from discord.ext import commands
 
-from utils.utilities import GuildConfig, check_admin, check_valid_channel
+from utils.utilities import GuildConfig, check_admin, check_valid_channel, purge_messages
 
 
 class AdminCommands(commands.Cog, name="Administrator Commands"):
@@ -49,9 +49,9 @@ class AdminCommands(commands.Cog, name="Administrator Commands"):
             return None
 
         current_embed_channels = set((await GuildConfig
-                                     .read_config(str(ctx.guild.id),
-                                                  "CHANNELS",
-                                                  "embed_channel"))
+                                      .read_config(str(ctx.guild.id),
+                                                   "CHANNELS",
+                                                   "embed_channel"))
                                      .split(", "))
         for item in current_embed_channels:
             if not item:
@@ -178,3 +178,19 @@ class AdminCommands(commands.Cog, name="Administrator Commands"):
             return
         await announcements_channel.send(str(ctx.message.content)[9:])
         logger.info(f"{ctx.author.name} sent an announcement")
+
+    @commands.command()
+    async def purge(self, ctx, messages=10):
+        await ctx.message.delete()
+        if not await check_admin(ctx.author):
+            await ctx.send("Only Admins may use this!", delete_after=3)
+
+        logger = logging.getLogger(str(ctx.guild.id))
+        try:
+            await purge_messages(ctx=ctx, messages=messages)
+            logger.info(f"Purged {messages} messages from {ctx.channel.name}")
+        except Exception as e:
+            await ctx.send("Unknown error with message purge!", delete_after=4)
+            logger.exception(f"Unknown Exception occurred while purging messages from {ctx.channel.name}", exc_info=e)
+        else:
+            await ctx.send(f"**Purged {messages} messages!**", delete_after=3)
