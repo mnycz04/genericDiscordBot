@@ -49,10 +49,15 @@ class AdminCommands(commands.Cog, name="Administrator Commands"):
             return None
 
         current_embed_channels = set((await GuildConfig
-                                      .read_config(str(ctx.guild.id),
-                                                   "CHANNELS",
-                                                   "embed_channel"))
+                                     .read_config(str(ctx.guild.id),
+                                                  "CHANNELS",
+                                                  "embed_channel"))
                                      .split(", "))
+        for item in current_embed_channels:
+            if not item:
+                current_embed_channels.remove(item)
+                break
+
         if str(ctx.message.channel.id) in current_embed_channels:
             current_embed_channels.remove(str(ctx.message.channel.id))
             await GuildConfig.set_config(str(ctx.guild.id),
