@@ -15,6 +15,11 @@ from cogs.adminCommands import AdminCommands
 from cogs.memberCommands import MemberCommands
 from utils.utilities import default_log_format
 
+
+# CHANGE THIS TO WHEREVER YOUR TOKEN IS LOCATED
+# IT SHOULD BE A FILE WITH ONLY YOUR BOT'S TOKEN, WITH NO NEWLINES OR SPACES
+PATH_TO_TOKEN = "token.key"
+
 # Sets up intents for the Bot Client
 intents = discord.Intents.default()
 intents.members = True
@@ -61,11 +66,12 @@ async def on_ready():
         _file.setFormatter(default_log_format)
         guild_log.addHandler(_file)
         guild_log.setLevel(20)
-        strout = logging.StreamHandler()
-        strout.setFormatter(default_log_format)
-        guild_log.addHandler(strout)
+        stdout = logging.StreamHandler()
+        stdout.setFormatter(default_log_format)
+        guild_log.addHandler(stdout)
 
 
 bot.add_cog(MemberCommands())
 bot.add_cog(AdminCommands())
-bot.run("NzU2MzI3MDQ0MjA3NjA3OTUw.X2QOcw.MuAf1OOSi9ykYddCjETPP8uX5GM")
+with open(PATH_TO_TOKEN, "r") as token:
+    bot.run(token.read())

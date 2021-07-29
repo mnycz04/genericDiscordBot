@@ -133,3 +133,5 @@ dmypy.json
 
 # log files
 /logs/*
+.idea/
+token.key
