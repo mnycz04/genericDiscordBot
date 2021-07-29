@@ -2,6 +2,7 @@ import asyncio
 import configparser
 import functools
 import logging
+import shutil
 import typing
 from random import randrange
 
@@ -15,7 +16,6 @@ def to_thread(func: typing.Callable):
     @functools.wraps(func)
     async def wrapper(*args):
         loop = asyncio.get_event_loop()
-        # wrapped = functools.partial(func, *args, **kwargs)
         return await loop.run_in_executor(None, func, args)
 
     return wrapper
@@ -55,6 +55,8 @@ async def check_blacklist(server: guild, author: member):
     blacklist_role = await GuildConfig.read_config(guild_id=str(server.id),
                                                    section="ROLES",
                                                    key="blacklist_role")
+    if not blacklist_role:
+        return False
     blacklist_role = utils.get(server.roles, id=int(blacklist_role))
     for role in author.roles:
         if blacklist_role == role:
@@ -64,7 +66,9 @@ async def check_blacklist(server: guild, author: member):
 
 async def check_valid_channel(server: guild, channel_name, command: message):
     channels = set((await GuildConfig.read_config(str(server.id), section="CHANNELS", key=channel_name)).split(", "))
-    if channels == "":
+    logger = logging.getLogger(str(server.id))
+    if channels == {''}:
+        logger.info(f"Channel not set for \"{channel_name}\"")
         return True
 
     if str(command.channel.id) in channels:
@@ -104,14 +108,20 @@ class GuildConfig:
             value = config.get(section, key)
         except FileNotFoundError:
             logging.getLogger(guild_id).critical(f"Config file not found for guild {guild_id}!")
-            raise
+            open(f"configs/{guild_id}.ini", "a").close()
+            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoSectionError:
             logging.getLogger(guild_id).critical(f"Section \"{section}\" not found in {guild_id}.ini!")
-            raise
+            open(f"configs/{guild_id}.ini", "a").close()
+            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoOptionError:
             logging.getLogger(guild_id).critical(f"Option \"{key}\" not found in section \"{section}\" in "
                                                  f"{guild_id}.ini!")
-            raise
+            open(f"configs/{guild_id}.ini", "a").close()
+            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            return await GuildConfig.read_config(guild_id, section, key)
         else:
             return value
 
