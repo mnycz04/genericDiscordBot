@@ -9,7 +9,7 @@ from random import randrange
 import praw
 from discord import Embed, guild, member, message, utils
 
-from mp3Downloader import Song
+from Utils.mp3Downloader import Song
 
 
 def to_thread(func: typing.Callable):
@@ -109,18 +109,18 @@ class GuildConfig:
         except FileNotFoundError:
             logging.getLogger(guild_id).critical(f"Config file not found for guild {guild_id}!")
             open(f"configs/{guild_id}.ini", "a").close()
-            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoSectionError:
             logging.getLogger(guild_id).critical(f"Section \"{section}\" not found in {guild_id}.ini!")
             open(f"configs/{guild_id}.ini", "a").close()
-            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoOptionError:
             logging.getLogger(guild_id).critical(f"Option \"{key}\" not found in section \"{section}\" in "
                                                  f"{guild_id}.ini!")
             open(f"configs/{guild_id}.ini", "a").close()
-            shutil.copyfile("configs/default.ini", f"configs/{guild_id}.ini")
+            shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
         else:
             return value

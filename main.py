@@ -11,10 +11,10 @@ from shutil import copyfile
 import discord
 from discord.ext import commands
 
-from adminCommands import AdminCommands
-from memberCommands import MemberCommands
-from musicCommands import MusicCommands
-from utilities import default_log_format
+from Cogs.adminCommands import AdminCommands
+from Cogs.memberCommands import MemberCommands
+from Cogs.musicCommands import MusicCommands
+from Utils.utilities import default_log_format
 
 # Sets up intents for the Bot Client
 intents = discord.Intents.default()
