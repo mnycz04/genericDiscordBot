@@ -107,18 +107,18 @@ class GuildConfig:
             config.read(f"configs/{guild_id}.ini")
             value = config.get(section, key)
         except FileNotFoundError:
-            logging.getLogger(guild_id).critical(f"Config file not found for guild {guild_id}!")
+            logging.getLogger(guild_id).fatal(f"Config file not found for guild {guild_id}!")
             open(f"configs/{guild_id}.ini", "a").close()
             shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoSectionError:
-            logging.getLogger(guild_id).critical(f"Section \"{section}\" not found in {guild_id}.ini!")
+            logging.getLogger(guild_id).warning(f"Section \"{section}\" not found in {guild_id}.ini!")
             open(f"configs/{guild_id}.ini", "a").close()
             shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
         except configparser.NoOptionError:
-            logging.getLogger(guild_id).critical(f"Option \"{key}\" not found in section \"{section}\" in "
-                                                 f"{guild_id}.ini!")
+            logging.getLogger(guild_id).warning(f"Option \"{key}\" not found in section \"{section}\" in "
+                                                f"{guild_id}.ini!")
             open(f"configs/{guild_id}.ini", "a").close()
             shutil.copyfile("../configs/default.ini", f"configs/{guild_id}.ini")
             return await GuildConfig.read_config(guild_id, section, key)
@@ -135,14 +135,14 @@ class GuildConfig:
             with open(f"configs/{guild_id}.ini", "w+") as file:
                 config.write(file)
         except FileNotFoundError:
-            logging.getLogger(guild_id).critical(f"Config file not found for guild {guild_id}!")
+            logging.getLogger(guild_id).fatal(f"Config file not found for guild {guild_id}!")
             raise
         except configparser.NoSectionError:
-            logging.getLogger(guild_id).critical(f"Section \"{section}\" not found in {guild_id}.ini!")
+            logging.getLogger(guild_id).warning(f"Section \"{section}\" not found in {guild_id}.ini!")
             raise
         except configparser.NoOptionError:
-            logging.getLogger(guild_id).critical(f"Option \"{key}\" not found in section \"{section}\" in "
-                                                 f"{guild_id}.ini!")
+            logging.getLogger(guild_id).warning(f"Option \"{key}\" not found in section \"{section}\" in "
+                                                f"{guild_id}.ini!")
             raise
         finally:
             return 0

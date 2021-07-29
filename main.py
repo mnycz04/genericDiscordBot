@@ -33,7 +33,7 @@ if not os.path.exists("logs/"):
     print("Created Logs Directory")
 
 discord_logger = logging.getLogger("discord")
-_file_handler = logging.FileHandler("logs/discord.log", encoding="utf-8", mode="w")
+_file_handler = logging.FileHandler("logs/discord.log", encoding="utf-8", mode="a")
 _file_handler.setFormatter(default_log_format)
 discord_logger.addHandler(_file_handler)
 _console_handler = logging.StreamHandler()
@@ -68,6 +68,8 @@ async def on_ready():
         stdout = logging.StreamHandler()
         stdout.setFormatter(default_log_format)
         guild_log.addHandler(stdout)
+    if not os.path.exists("configs/praw.ini"):
+        discord_logger.error("praw.ini doesn't exist, reddit commands will be unusable")
 
 
 bot.add_cog(MemberCommands())

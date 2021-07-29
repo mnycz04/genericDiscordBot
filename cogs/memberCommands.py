@@ -79,8 +79,7 @@ class MemberCommands(commands.Cog, name="Member Commands"):
             logger.info("Subreddit name was invalid.")
         except Exception as error:
             await ctx.send("Unknown error occurred. Sorry!", delete_after=10)
-            logger.exception("Unknown error occurred in getting a reddit post")
-            logger.exception(error)
+            logger.warning("Unknown error occurred in getting a reddit post")
         else:
             video = False
             embed = discord.Embed(title=post.title, url=post.shortlink, color=int(hex(int("ff0000", 16)), 0))
