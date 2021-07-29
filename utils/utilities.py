@@ -33,12 +33,11 @@ def get_mp3(query) -> (Embed, str):
         song = Song()
         song.song_query = query
         song.download_song()
-        duration = f"{int(song.song_duration // 60)}:{int(song.song_duration % 60)}"
+        duration = f"{int(song.song_duration // 60)}:{int(song.song_duration % 60):02d}"
 
-        embed = Embed(title=song.song_name, color=int(hex(int("009dff", 16)), 0))
-        embed.set_image(url=song.song_thumbnail)
+        embed = Embed(title=song.song_name, url=song.song_url, color=0x0088ff)
         embed.set_footer(text=duration)
-        embed.set_author(name=song.song_url)
+        embed.set_image(url=song.song_thumbnail)
     except Exception as e:
         print(e)
         raise
