@@ -15,7 +15,6 @@ from cogs.adminCommands import AdminCommands
 from cogs.memberCommands import MemberCommands
 from utils.utilities import default_log_format
 
-
 # CHANGE THIS TO WHEREVER YOUR TOKEN IS LOCATED
 # IT SHOULD BE A FILE WITH ONLY YOUR BOT'S TOKEN, WITH NO NEWLINES OR SPACES
 PATH_TO_TOKEN = "token.key"
@@ -74,4 +73,11 @@ async def on_ready():
 bot.add_cog(MemberCommands())
 bot.add_cog(AdminCommands())
 with open(PATH_TO_TOKEN, "r") as token:
-    bot.run(token.read())
+    try:
+        bot.run(token.read())
+    except Exception:
+        quit(print("You need to specify the location of your token.\n"
+                   "By Default, it's a file named \"token.key\", and "
+                   "\nonly contains the key, with no extra spaces or newlines.\n\n"
+                   "If you'd like to change the name or path to your token,"
+                   "remember to edit 'PATH_TO_TOKEN' in 'main.py'"))
