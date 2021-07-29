@@ -21,7 +21,7 @@ def to_thread(func: typing.Callable):
     return wrapper
 
 
-MAX_POSTS = 100
+MAX_POSTS = 20
 reddit = praw.Reddit(client_id='X0VJq7wE00FEYQ',
                      client_secret='oQ09GcBauKxPxN2su0o18Xb_EqC6vw',
                      user_agent='windows:mnycz04.discord:v1.5.3 (by /u/mnycz04; mnycz04@gmail.com)')
