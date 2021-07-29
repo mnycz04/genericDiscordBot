@@ -9,7 +9,7 @@ from random import randrange
 import praw
 from discord import Embed, guild, member, message, utils
 
-from songHandler import Song
+from mp3Downloader import Song
 
 
 def to_thread(func: typing.Callable):
