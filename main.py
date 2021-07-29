@@ -13,6 +13,7 @@ from discord.ext import commands
 
 from adminCommands import AdminCommands
 from memberCommands import MemberCommands
+from musicCommands import MusicCommands
 from utilities import default_log_format
 
 # Sets up intents for the Bot Client
@@ -68,4 +69,5 @@ async def on_ready():
 
 bot.add_cog(MemberCommands())
 bot.add_cog(AdminCommands())
+bot.add_cog(MusicCommands())
 bot.run("NzU2MzI3MDQ0MjA3NjA3OTUw.X2QOcw.MuAf1OOSi9ykYddCjETPP8uX5GM")
