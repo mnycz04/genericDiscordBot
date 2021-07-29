@@ -11,10 +11,9 @@ from shutil import copyfile
 import discord
 from discord.ext import commands
 
-from Cogs.adminCommands import AdminCommands
-from Cogs.memberCommands import MemberCommands
-from Cogs.musicCommands import MusicCommands
-from Utils.utilities import default_log_format
+from cogs.adminCommands import AdminCommands
+from cogs.memberCommands import MemberCommands
+from utils.utilities import default_log_format
 
 # Sets up intents for the Bot Client
 intents = discord.Intents.default()
@@ -69,5 +68,4 @@ async def on_ready():
 
 bot.add_cog(MemberCommands())
 bot.add_cog(AdminCommands())
-bot.add_cog(MusicCommands())
 bot.run("NzU2MzI3MDQ0MjA3NjA3OTUw.X2QOcw.MuAf1OOSi9ykYddCjETPP8uX5GM")

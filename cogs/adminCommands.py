@@ -3,7 +3,7 @@ import logging
 from discord import utils
 from discord.ext import commands
 
-from Utils.utilities import GuildConfig, check_admin, check_valid_channel
+from utils.utilities import GuildConfig, check_admin, check_valid_channel
 
 
 class AdminCommands(commands.Cog, name="Administrator Commands"):

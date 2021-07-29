@@ -8,7 +8,7 @@ from random import random
 import discord
 from discord.ext import commands
 
-from Utils.utilities import check_blacklist, check_valid_channel, get_mp3, get_reddit_post
+from utils.utilities import check_blacklist, check_valid_channel, get_mp3, get_reddit_post
 
 
 class MemberCommands(commands.Cog, name="Member Commands"):

@@ -1,5 +1,7 @@
-praw
-discord
-ffmpy
+praw~=7.3.0
+discord~=1.7.3
+ffmpy~=0.3.0
 youtube_dl
-requests
+
+configparser~=5.0.2
+requests~=2.26.0
