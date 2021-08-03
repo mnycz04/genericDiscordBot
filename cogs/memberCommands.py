@@ -77,7 +77,7 @@ class MemberCommands(commands.Cog, name="Member Commands"):
         except LookupError:
             await ctx.send(f"**{subreddit} was an invalid name.**", delete_after=10)
             logger.info("Subreddit name was invalid.")
-        except Exception as error:
+        except Exception:
             await ctx.send("Unknown error occurred. Sorry!", delete_after=10)
             logger.warning("Unknown error occurred in getting a reddit post")
         else:
@@ -103,4 +103,21 @@ class MemberCommands(commands.Cog, name="Member Commands"):
         text = "".join(text)
         chance = round(random() * 100, 2)
         await ctx.send(f"{text}, {chance}%", delete_after=20)
+
+    @commands.command()
+    async def afk(self, ctx, *, _garbage=None):
+        """Moves you to the afk channel"""
+        await ctx.message.delete()
+
+        if ctx.guild.afk_channel is None:
+            await ctx.send("This server doesn't have an AFK channel!", delete_after=5)
+            return
+        else:
+            afk_channel = ctx.guild.afk_channel
+
+        try:
+            await ctx.author.move_to(channel=afk_channel, reason="Used $afk command")
+        except Exception:
+            await ctx.send("Couldn't move you!", delete_after=5)
+
 

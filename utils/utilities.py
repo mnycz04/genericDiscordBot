@@ -7,7 +7,7 @@ import typing
 from random import randrange
 
 import praw
-from discord import Embed, channel, guild, member, message, utils
+from discord import Embed, guild, member, message, utils
 
 from utils.mp3Downloader import Song
 
